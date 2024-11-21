@@ -23,13 +23,41 @@ services:
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
     ports:
-      - "8081:8080"
+      - "7081:8080"
     depends_on:
-        - user-service-mysql
+      - user-service-mysql
     networks:
-        - app-network
+      - app-network
 
+  product-service-mysql:
+    image: mysql:8.0
+    container_name: product-service-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: user
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    volumes:
+      - ./mysql/product-service-mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3307:3306"
+    networks:
+      - app-network
 
+  product-service-was:
+    build:
+      context: ./product-service
+    container_name: product-service-was
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://product-service-mysql:3306/user
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+    ports:
+      - "7082:8080"
+    depends_on:
+      - product-service-mysql
+    networks:
+      - app-network
 
 networks:
   app-network:

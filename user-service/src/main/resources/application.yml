@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    username: admin
+    password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
